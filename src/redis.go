@@ -51,7 +51,6 @@ func (redisLock RedisLock) Lock() error {
             }
         }
     }
-    // fmt.Println(totalCount, successCount)
     if totalCount >> 2 >= successCount{
         err := redisLock.Release()
         if err != nil{
