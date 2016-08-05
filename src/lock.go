@@ -25,7 +25,7 @@ func GetDefaultRedisLock() *RedisLock {
     }
     rand.Seed(time.Now().Unix())
     ramdomNum := rand.Int63()
-    return &RedisLock{Name:"defaultRedisLock", Expired:60, randomKey:ramdomNum}
+    return &RedisLock{Name:"defaultRedisLock", Expired:3000, randomKey:ramdomNum}
 }
 
 func GetRedisLock(name string, expired int64) *RedisLock {

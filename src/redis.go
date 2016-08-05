@@ -43,7 +43,7 @@ func (redisLock RedisLock) Lock() error {
     beginTime := time.Now()
     for _, conn := range redisConns{
         span := time.Now().Sub(beginTime)
-        expired := redisLock.Expired - span.Nanoseconds()/1000
+        expired := redisLock.Expired - span.Nanoseconds()/1000000
         ret, err := conn.Do("set", redisLock.Name, redisLock.randomKey, "nx", "px", expired)
         if err == nil{
             if ret == "OK"{
@@ -51,7 +51,8 @@ func (redisLock RedisLock) Lock() error {
             }
         }
     }
-    if totalCount << 2 >= successCount{
+    // fmt.Println(totalCount, successCount)
+    if totalCount >> 2 >= successCount{
         err := redisLock.Release()
         if err != nil{
             return err
