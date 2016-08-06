@@ -12,27 +12,33 @@ type Lock interface {
 }
 
 
-func RegisterLock(lockType string, config []string)  {
+func RegisterLock(lockType string, addrs []string, options map[string]string)  {
     if lockType == "redis" {
-        registRedisInstance(config)
+        registRedisInstance(addrs, options)
+    }else if lockType == "etcd"{
+        registEtcdInstance(addrs, options)
     }
 }
 
 
-func GetDefaultRedisLock() *RedisLock {
+func GetDefaultRedisMutexLock() *RedisMutexLock {
     if len(redisConns) == 0{
-        panic("You must register redis lock first")
+        panic("You must register redis instance first")
     }
     rand.Seed(time.Now().Unix())
     ramdomNum := rand.Int63()
-    return &RedisLock{Name:"defaultRedisLock", Expired:3000, randomKey:ramdomNum}
+    return &RedisMutexLock{Name:"defaultRedisLock", Expired:3000, randomKey:ramdomNum}
 }
 
-func GetRedisLock(name string, expired int64) *RedisLock {
+func GetRedisMutexLock(name string, expired int64) *RedisMutexLock {
     if len(redisConns) == 0{
-        panic("You must register redis lock first")
+        panic("You must register redis instance first")
     }
     rand.Seed(time.Now().Unix())
     ramdomNum := rand.Int63()
-    return &RedisLock{Name:name, Expired:expired, randomKey:ramdomNum}
+    return &RedisMutexLock{Name:name, Expired:expired, randomKey:ramdomNum}
+}
+
+func GetDefaultRedisRWLock()  {
+    
 }

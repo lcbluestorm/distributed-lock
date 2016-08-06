@@ -1,15 +1,15 @@
 package lock
 
-import "testing"
-// import "github.com/garyburd/redigo/redis"
-import "fmt"
-// import "strconv"
+import (
+    "testing"
+    "fmt"
+)
 
-func TestRedisMutexLock(t *testing.T)  {
-    fmt.Println("redis mutex lock test start")
+func TestEtcd(t *testing.T)  {
+    fmt.Println("etcd mutex lock test start")
     config := []string{":18000", ":18001", ":18002"}
     var options map[string]string
-    RegisterLock("redis", config, options)
+    RegisterLock("etcd", config, options)
     // lock := GetDefaultRedisLock()
     lock := GetRedisMutexLock("test", 10000)
     fmt.Println(lock)
@@ -20,5 +20,5 @@ func TestRedisMutexLock(t *testing.T)  {
     
     fmt.Println("redis mutex locktest end")
 
-    
 }
+

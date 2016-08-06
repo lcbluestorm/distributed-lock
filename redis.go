@@ -11,7 +11,7 @@ import (
 var redisConns []redis.Conn
 
 
-func registRedisInstance(addrs []string)  {
+func registRedisInstance(addrs []string, options map[string]string)  {
     if len(redisConns) > 0{
         return 
     }
@@ -31,20 +31,20 @@ func registRedisInstance(addrs []string)  {
 }
 
 
-type RedisLock struct {
+type RedisMutexLock struct {
     Name string
     Expired int64
     randomKey int64
 }
 
-func (redisLock RedisLock) Lock() error {
+func (mutexLock RedisMutexLock) Lock() error {
     totalCount := len(redisConns)
     successCount := 0
     beginTime := time.Now()
     for _, conn := range redisConns{
         span := time.Now().Sub(beginTime)
-        expired := redisLock.Expired - span.Nanoseconds()/1000000
-        ret, err := conn.Do("set", redisLock.Name, redisLock.randomKey, "nx", "px", expired)
+        expired := mutexLock.Expired - span.Nanoseconds()/1000000
+        ret, err := conn.Do("set", mutexLock.Name, mutexLock.randomKey, "nx", "px", expired)
         if err == nil{
             if ret == "OK"{
                 successCount ++
@@ -52,7 +52,7 @@ func (redisLock RedisLock) Lock() error {
         }
     }
     if totalCount >> 2 >= successCount{
-        err := redisLock.Release()
+        err := mutexLock.Release()
         if err != nil{
             return err
         }
@@ -61,9 +61,9 @@ func (redisLock RedisLock) Lock() error {
     return nil
 }
 
-func (redisLock RedisLock) Release()  error {
+func (mutexLock RedisMutexLock) Release()  error {
     for _, conn := range redisConns{
-        ret, err := conn.Do("get", redisLock.Name)
+        ret, err := conn.Do("get", mutexLock.Name)
         if err != nil{
             return err
         }
@@ -71,8 +71,8 @@ func (redisLock RedisLock) Release()  error {
         if err != nil{
             return err
         }
-        if ret1 == redisLock.randomKey{
-            _, err := conn.Do("del", redisLock.Name)
+        if ret1 == mutexLock.randomKey{
+            _, err := conn.Do("del", mutexLock.Name)
             if err != nil{
                 return err
             }
