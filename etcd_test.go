@@ -18,6 +18,6 @@ func TestEtcd(t *testing.T) {
 		fmt.Println("get lock failed")
 	}
 
-	fmt.Println("redis mutex locktest end")
+	fmt.Println("etcd mutex locktest end")
 
 }
