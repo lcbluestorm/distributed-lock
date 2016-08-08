@@ -5,7 +5,8 @@
 ### redis lock
      // mutex lock
      config := []string{":18000", ":18001", ":18002"}
-     RegisterLock("redis", config)
+     var options map[string]string
+     RegisterLock("redis", config, options)
      // redisLock := GetDefaultRedisMutexLock()
      redisLock := GetRedisMutexLock("test", 10000) //10s
      err := redisLock.Lock()
@@ -14,7 +15,7 @@
      }
      do something
      redisLock.Release()
-     
+
 
 ### etcd lock
     
