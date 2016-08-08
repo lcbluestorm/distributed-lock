@@ -7,7 +7,7 @@ import (
 
 func TestEtcd(t *testing.T) {
 	fmt.Println("etcd mutex lock test start")
-	config := []string{":18000", ":18001", ":18002"}
+	config := []string{":18000"}
 	var options map[string]string
 	RegisterLock("etcd", config, options)
 	// lock := GetDefaultRedisLock()

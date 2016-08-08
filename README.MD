@@ -10,13 +10,21 @@
      // redisLock := GetDefaultRedisMutexLock()
      redisLock := GetRedisMutexLock("test", 10000) //10s
      err := redisLock.Lock()
-     if err != nil{
-        fmt.Println("get lock failed")
+     if err == nil{
+        do something()
+        redisLock.Release()
      }
-     do something
-     redisLock.Release()
-
 
 ### etcd lock
-    
-    
+    // mutext lock
+    config := []string{":18000"}
+	var options map[string]string
+	RegisterLock("etcd", config, options)
+	// lock := GetDefaultRedisLock()
+	lock := GetEtcdMutexLock("test", 10000)
+	fmt.Println(lock)
+	err := lock.Lock()
+	if err == nil {
+		do something()
+        lock.Release()
+	}    
